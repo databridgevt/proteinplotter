@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Color Graph</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="colormap.css">
+
+</head>
+
+<body>
+  <input type="file" name="file" class="input-file" id="colormap-files" multiple />
+  <button onclick="getXpmFiles('colormap')" class="btn btn-primary"><b>Generate Plot</b></button>
+  <table id="plot-table">
+  </table>
+
+  <table id="legend">
+    <tr>
+      <td>Helix vs Coil</td>
+      <td>Coil vs Sheet</td>
+      <td>Sheet vs Helix</td>
+      <td>Mix</td>
+    </tr>
+    <tr>
+      <td>
+        <table>
+          <tr>
+            <td id="color0" class="colored"></td>
+            <td>helix:100%<br />coil: 0%<br />sheet: 0%</td>
+          </tr>
+        </table>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td id="color4" class="colored"></td>
+            <td>helix:0%<br />coil: 100%<br />sheet: 0%</td>
+          </tr>
+        </table>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td id="color8" class="colored"></td>
+            <td>helix:0%<br />coil: 0%<br />sheet: 100%</td>
+          </tr>
+        </table>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td id="color12" class="colored"></td>
+            <td>helix:33%<br />coil: 33%<br />sheet: 33%</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <table>
+          <tr>
+            <td id="color1" class="colored"></td>
+            <td>helix:67%<br />coil: 33%<br />sheet: 0%</td>
+          </tr>
+        </table>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td id="color5" class="colored"></td>
+            <td>helix:0%<br />coil: 67%<br />sheet: 33%</td>
+          </tr>
+        </table>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td id="color9" class="colored"></td>
+            <td>helix:33%<br />coil: 0%<br />sheet: 67%</td>
+          </tr>
+        </table>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td id="color13" class="colored"></td>
+            <td>helix:50%<br />coil: 25%<br />sheet: 25%</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+
+
+      <td>
+        <table>
+          <tr>
+            <td id="color2" class="colored"></td>
+            <td>helix:50%<br />coil: 50%<br />sheet: 0%</td>
+          </tr>
+        </table>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td id="color6" class="colored"></td>
+            <td>helix:0%<br />coil: 50%<br />sheet: 50%</td>
+          </tr>
+        </table>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td id="color10" class="colored"></td>
+            <td>helix:50%<br />coil: 0%<br />sheet: 50%</td>
+          </tr>
+        </table>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td id="color14" class="colored"></td>
+            <td>helix:25%<br />coil: 50%<br />sheet: 25%</td>
+          </tr>
+        </table>
+      </td>
+
+
+    </tr>
+    <tr>
+
+
+      <td>
+        <table>
+          <tr>
+            <td id="color3" class="colored"></td>
+            <td>helix:33%<br />coil: 67%<br />sheet: 0%</td>
+          </tr>
+        </table>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td id="color7" class="colored"></td>
+            <td>helix:0%<br />coil: 33%<br />sheet: 67%</td>
+          </tr>
+        </table>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td id="color11" class="colored"></td>
+            <td>helix:67%<br />coil: 0%<br />sheet: 33%</td>
+          </tr>
+        </table>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td id="color15" class="colored"></td>
+            <td>helix:25%<br />coil: 25%<br />sheet: 50%</td>
+          </tr>
+        </table>
+      </td>
+
+
+    </tr>
+  </table>
+
+<!--
+  <table>
+    <tr>
+      <td id="color0" class="colored"></td>
+      <td>helix:100%<br />coil: 0%<br />sheet: 0%</td>
+      <td id="color1" class="colored"></td>
+      <td>helix:67%<br />coil: 33%<br />sheet: 0%</td>
+      <td id="color2" class="colored"></td>
+      <td>helix:50%<br />coil: 50%<br />sheet: 0%</td>
+      <td id="color3" class="colored"></td>
+      <td>helix:33%<br />coil: 67%<br />sheet: 0%</td>
+    </tr>
+    <tr>
+
+      <td id="color4" class="colored"></td>
+      <td>helix:0%<br />coil: 100%<br />sheet: 0%</td>
+      <td id="color5" class="colored"></td>
+      <td>helix:0%<br />coil: 67%<br />sheet: 33%</td>
+      <td id="color6" class="colored"></td>
+      <td>helix:0%<br />coil: 50%<br />sheet: 50%</td>
+      <td id="color7" class="colored"></td>
+      <td>helix:0%<br />coil: 33%<br />sheet: 67%</td>
+    </tr>
+    <tr>
+
+      <td id="color8" class="colored"></td>
+      <td>helix:0%<br />coil: 0%<br />sheet: 100%</td>
+      <td id="color9" class="colored"></td>
+      <td>helix:33%<br />coil: 0%<br />sheet: 67%</td>
+      <td id="color10" class="colored"></td>
+      <td>helix:50%<br />coil: 0%<br />sheet: 50%</td>
+      <td id="color11" class="colored"></td>
+      <td>helix:67%<br />coil: 0%<br />sheet: 33%</td>
+    </tr>
+    <tr>
+
+      <td id="color12" class="colored"></td>
+      <td>helix:33%<br />coil: 33%<br />sheet: 33%</td>
+      <td id="color13" class="colored"></td>
+      <td>helix:50%<br />coil: 25%<br />sheet: 25%</td>
+      <td id="color14" class="colored"></td>
+      <td>helix:25%<br />coil: 50%<br />sheet: 25%</td>
+      <td id="color15" class="colored"></td>
+      <td>helix:25%<br />coil: 25%<br />sheet: 50%</td>
+    </tr>
+  </table> -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="ryb2rgb.js" charset="utf-8"></script>
+  <script src="public/plotterscript.js" charset="utf-8"></script>
+</body>
+
+</html>

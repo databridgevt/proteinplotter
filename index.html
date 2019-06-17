@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Protein Plotter</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Montserrat:400,600,700,800&display=swap');
+  </style>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://kit.fontawesome.com/d27b01dd4f.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+</head>
+
+<body>
+
+  <!-- Body of page -->
+  <div class="container">
+    <!-- Header Section -->
+    <header>
+      <h3><img id="bblab-img" src="bblab.png" alt="BBLab image">Protein Plotter<img id="vt-img" src="vt.png" alt="vt image"></h3>
+    </header>
+    <div class="row">
+      <!-- left panel -->
+      <div class="col-4">
+        <div class="left-panel-container">
+          <!-- left panel tabs -->
+          <ul class="nav nav-tabs" id="tab1" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="line-tab" data-toggle="tab" href="#line" role="tab" aria-controls="line" aria-selected="true">Line Graph</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="bar-tab" data-toggle="tab" href="#bar" role="tab" aria-controls="bar" aria-selected="false">Bar Graph</a>
+            </li>
+          </ul>
+
+          <!-- left panel tab content -->
+          <div class="tab-content" id="tab1-content">
+            <!-- line graph tab content -->
+            <div class="tab-pane fade show active" id="line" role="tabpanel" aria-labelledby="line-tab">
+              <!-- inner tabs -->
+              <div class="time-res-tabs">
+                <ul class="nav nav-tabs" id="tab2" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" id="time-tab" data-toggle="tab" href="#time" role="tab" aria-controls="time" aria-selected="true">Time</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="residue-tab" data-toggle="tab" href="#residue" role="tab" aria-controls="residue" aria-selected="false">Residue</a>
+                  </li>
+                </ul>
+                <!-- inner tab content -->
+                <div class="tab-content" id="tab2-content">
+                  <div class="tab-pane fade show active" id="time" role="tabpanel" aria-labelledby="time-tab">
+                    <!-- time graph form -->
+                    <h6>Enter Time Plot Info:</h6>
+                    <form class="time-form">
+                      <div class="form-group">
+                        <label for="time-plot-title">Plot Title</label>
+                        <input type="text" class="plot-title text-field" id="time-plot-title" placeholder="Enter Plot Title" autocomplete="off">
+                      </div>
+                      <div class="form-group">
+                        <label for="time-avg-strands">Average all strands</label>
+                        <input type="checkbox" class="pointer" id="time-avg-strands" checked>
+                      </div>
+                      <div class="color-choices form-group">
+                        <table class="color-table">
+                          <tr>
+                            <td>
+                              <label for="time-coil-color">Coil color: </label>
+                            </td>
+                            <td>
+                              <input type="color" class="color-input" id="time-coil-color" value="#808080">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <label for="time-helix-color">Helix color: </label>
+                            </td>
+                            <td>
+                              <input type="color" class="color-input" id="time-helix-color" value="#600000">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <label for="time-sheet-color">Sheet color: </label>
+                            </td>
+                            <td>
+                              <input type="color" class="color-input" id="time-sheet-color" value="#0f4880">
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                      <div class="form-group">
+                        <input type="file" name="file" class="input-file" id="time-files" multiple />
+                        <label class="label-button" id="choose-time-files" for="time-files"><i class="fas fa-file-upload"></i> Choose File(s)</label>
+                      </div>
+                      <div class="generate-plot form-group">
+                        <label onclick="getXpmFiles('line-time')" id="time-gen-plot" class="label-button"><b>Generate Plot</b></label>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="tab-pane fade" id="residue" role="tabpanel" aria-labelledby="residue-tab">
+                    <!-- RESIDUE GRAPH FORM -->
+                    <h6>Enter Residue Plot Info:</h6>
+                    <form class="res-form">
+                      <div class="form-group">
+                        <label for="res-plot-title">Plot Title</label>
+                        <input type="text" class="plot-title text-field" id="res-plot-title" placeholder="Enter Plot Title" autocomplete="off">
+                      </div>
+                      <div class="form-group">
+                        <label for="res-avg-strands">Average all strands</label>
+                        <input type="checkbox" class="pointer" id="res-avg-strands" checked>
+                      </div>
+                      <div class="color-choices form-group">
+                        <table class="color-table">
+                          <tr>
+                            <td>
+                              <label for="res-coil-color">Coil color: </label>
+                            </td>
+                            <td>
+                              <input type="color" class="color-input" id="res-coil-color" value="#808080">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <label for="res-sheet-color">Sheet color: </label>
+                            </td>
+                            <td>
+                              <input type="color" class="color-input" id="res-sheet-color" value="#0f4880">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <label for="res-helix-color">Helix color: </label>
+                            </td>
+                            <td>
+                              <input type="color" class="color-input" id="res-helix-color" value="#600000">
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                      <div class="form-group">
+                        <input type="file" name="file" class="input-file" id="res-files" multiple />
+                        <label class="label-button" id="choose-res-files" for="res-files"><i class="fas fa-file-upload"></i> Choose File(s)</label>
+                      </div>
+                      <div class="generate-plot form-group">
+                        <label onclick="getXpmFiles('line-res')" id="res-gen-plot" class="label-button"><b>Generate Plot</b></label>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Bar graph tab content -->
+            <div class="tab-pane fade" id="bar" role="tabpanel" aria-labelledby="bar-tab">
+              <p>Bar Graph tab content</p>
+            </div>
+          </div>
+        </div> <!-- End initiate plot tabs -->
+      </div> <!-- End left panel -->
+      <!-- Right Panel -->
+      <div class="col-8">
+        <div class="right-panel-container">
+          <!-- Plot -->
+          <div id="plot" style="width:100%;min-height:600px;"><i class="fas fa-chart-line fa-5x" id="plot-icon"></i></div>
+          <!-- Plot control tabs -->
+          <div class="plot-control-tabs">
+            <ul class="nav nav-tabs" id="tab3" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">General</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="x-axis-tab" data-toggle="tab" href="#x-axis" role="tab" aria-controls="x-axis" aria-selected="false">X-Axis</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="y-axis-tab" data-toggle="tab" href="#y-axis" role="tab" aria-controls="y-axis" aria-selected="false">Y-Axis</a>
+              </li>
+            </ul>
+            <!-- plot control tab content -->
+            <div class="tab-content" id="tab3-content">
+              <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
+                <!-- general control form -->
+                <table class="control-table">
+                  <tr>
+                    <td class="control-panel-td">
+                      <div class="form-group">
+                        <label class="plot-control-labels  text-field" for="gen-plot-title-input">Plot Title</label>
+                        <input id="plot-title-input" type="text" onkeyup="updatePlot('plot-title-input', null)" class="plot-title title-input" placeholder="Enter Plot Title" autocomplete="off">
+                        <table>
+                          <tr>
+                            <td> <label for="gen-plot-title">Font-family:</label></td>
+                            <td>
+                              <div class="title-search-dropdown-container">
+                                <button onclick="titleSearchDropdownClicked()" class="label-button dropbtn title-font-family-input">Montserrat <i class="dropdown-arrow fas fa-caret-down"></i></button>
+                                <div class="dropdown-content title-dropdown-content-container">
+                                  <input type="text" placeholder="Search.." class="title-font-family-input-options" onkeyup="filterFunction()">
+                                  <label id='#title-font-choice-Andale Mono' onclick='updatePlot("title-font-choice", "Andale Mono")'>Andale Mono</label>
+                                  <label id='#title-font-choice-Apple Chancery' onclick='updatePlot("title-font-choice", "Apple Chancery")'>Apple Chancery</label>
+                                  <label id='#title-font-choice-Arial' onclick='updatePlot("title-font-choice", "Arial")'>Arial</label>
+                                  <label id='#title-font-choice-Arnoldboecklin' onclick='updatePlot("title-font-choice", "Arnoldboecklin")'>Arnoldboecklin</label>
+                                  <label id='#title-font-choice-Avanta Garde' onclick='updatePlot("title-font-choice", "Avanta Garde")'>Avanta Garde</label>
+                                  <label id='#title-font-choice-Baskerville' onclick='updatePlot("title-font-choice", "Baskerville")'>Baskerville</label>
+                                  <label id='#title-font-choice-Big Caslon' onclick='updatePlot("title-font-choice", "Big Caslon")'>Big Caslon</label>
+                                  <label id='#title-font-choice-Blippo' onclick='updatePlot("title-font-choice", "Blippo")'>Blippo</label>
+                                  <label id='#title-font-choice-Bodoni MT' onclick='updatePlot("title-font-choice", "Bodoni MT")'>Bodoni MT</label>
+                                  <label id='#title-font-choice-Book Antiqua' onclick='updatePlot("title-font-choice", "Book Antiqua")'>Book Antiqua</label>
+                                  <label id='#title-font-choice-Bookman' onclick='updatePlot("title-font-choice", "Bookman")'>Bookman</label>
+                                  <label id='#title-font-choice-Bradley Hand' onclick='updatePlot("title-font-choice", "Bradley Hand")'>Bradley Hand</label>
+                                  <label id='#title-font-choice-Brush Script MT' onclick='updatePlot("title-font-choice", "Brush Script MT")'>Brush Script MT</label>
+                                  <label id='#title-font-choice-Brush Script Std' onclick='updatePlot("title-font-choice", "Brush Script Std")'>Brush Script Std</label>
+                                  <label id='#title-font-choice-Brushstroke' onclick='updatePlot("title-font-choice", "Brushstroke")'>Brushstroke</label>
+                                  <label id='#title-font-choice-Calibri' onclick='updatePlot("title-font-choice", "Calibri")'>Calibri</label>
+                                  <label id='#title-font-choice-Calisto MT' onclick='updatePlot("title-font-choice", "Calisto MT")'>Calisto MT</label>
+                                  <label id='#title-font-choice-Cambria' onclick='updatePlot("title-font-choice", "Cambria")'>Cambria</label>
+                                  <label id='#title-font-choice-Candara' onclick='updatePlot("title-font-choice", "Candara")'>Candara</label>
+                                  <label id='#title-font-choice-Century Gothic' onclick='updatePlot("title-font-choice", "Century Gothic")'>Century Gothic</label>
+                                  <label id='#title-font-choice-Chalkduster' onclick='updatePlot("title-font-choice", "Chalkduster")'>Chalkduster</label>
+                                  <label id='#title-font-choice-Comic Sans' onclick='updatePlot("title-font-choice", "Comic Sans")'>Comic Sans</label>
+                                  <label id='#title-font-choice-Comic Sans MS' onclick='updatePlot("title-font-choice", "Comic Sans MS")'>Comic Sans MS</label>
+                                  <label id='#title-font-choice-Consolas' onclick='updatePlot("title-font-choice", "Consolas")'>Consolas</label>
+                                  <label id='#title-font-choice-Copperplate' onclick='updatePlot("title-font-choice", "Copperplate")'>Copperplate</label>
+                                  <label id='#title-font-choice-Coronet script' onclick='updatePlot("title-font-choice", "Coronet script")'>Coronet script</label>
+                                  <label id='#title-font-choice-Courier' onclick='updatePlot("title-font-choice", "Courier")'>Courier</label>
+                                  <label id='#title-font-choice-Courier New' onclick='updatePlot("title-font-choice", "Courier New")'>Courier New</label>
+                                  <label id='#title-font-choice-Didot' onclick='updatePlot("title-font-choice", "Didot")'>Didot</label>
+                                  <label id='#title-font-choice-Florence' onclick='updatePlot("title-font-choice", "Florence")'>Florence</label>
+                                  <label id='#title-font-choice-Franklin Gothic Medium' onclick='updatePlot("title-font-choice", "Franklin Gothic Medium")'>Franklin Gothic Medium</label>
+                                  <label id='#title-font-choice-Futara' onclick='updatePlot("title-font-choice", "Futara")'>Futara</label>
+                                  <label id='#title-font-choice-Garamond' onclick='updatePlot("title-font-choice", "Garamond")'>Garamond</label>
+                                  <label id='#title-font-choice-Geneva' onclick='updatePlot("title-font-choice", "Geneva")'>Geneva</label>
+                                  <label id='#title-font-choice-Georgia' onclick='updatePlot("title-font-choice", "Georgia")'>Georgia</label>
+                                  <label id='#title-font-choice-Gill Sans' onclick='updatePlot("title-font-choice", "Gill Sans")'>Gill Sans</label>
+                                  <label id='#title-font-choice-Goudy Old Style' onclick='updatePlot("title-font-choice", "Goudy Old Style")'>Goudy Old Style</label>
+                                  <label id='#title-font-choice-Helvetica' onclick='updatePlot("title-font-choice", "Helvetica")'>Helvetica</label>
+                                  <label id='#title-font-choice-Hoefler Text' onclick='updatePlot("title-font-choice", "Hoefler Text")'>Hoefler Text</label>
+                                  <label id='#title-font-choice-Impact' onclick='updatePlot("title-font-choice", "Impact")'>Impact</label>
+                                  <label id='#title-font-choice-Jazz LET' onclick='updatePlot("title-font-choice", "Jazz LET")'>Jazz LET</label>
+                                  <label id='#title-font-choice-Lucida Bright' onclick='updatePlot("title-font-choice", "Lucida Bright")'>Lucida Bright</label>
+                                  <label id='#title-font-choice-Lucida Console' onclick='updatePlot("title-font-choice", "Lucida Console")'>Lucida Console</label>
+                                  <label id='#title-font-choice-Lucida Sans' onclick='updatePlot("title-font-choice", "Lucida Sans")'>Lucida Sans</label>
+                                  <label id='#title-font-choice-Lucida Sans Typewriter' onclick='updatePlot("title-font-choice", "Lucida Sans Typewriter")'>Lucida Sans Typewriter</label>
+                                  <label id='#title-font-choice-Lucidatypewriter' onclick='updatePlot("title-font-choice", "Lucidatypewriter")'>Lucidatypewriter</label>
+                                  <label id='#title-font-choice-Luminari' onclick='updatePlot("title-font-choice", "Luminari")'>Luminari</label>
+                                  <label id='#title-font-choice-Marker Felt' onclick='updatePlot("title-font-choice", "Marker Felt")'>Marker Felt</label>
+                                  <label id='#title-font-choice-Monaco' onclick='updatePlot("title-font-choice", "Monaco")'>Monaco</label>
+                                  <label id='#title-font-choice-New Century Schoolbook' onclick='updatePlot("title-font-choice", "New Century Schoolbook")'>New Century Schoolbook</label>
+                                  <label id='#title-font-choice-Noto' onclick='updatePlot("title-font-choice", "Noto")'>Noto</label>
+                                  <label id='#title-font-choice-Oldtown' onclick='updatePlot("title-font-choice", "Oldtown")'>Oldtown</label>
+                                  <label id='#title-font-choice-Optima' onclick='updatePlot("title-font-choice", "Optima")'>Optima</label>
+                                  <label id='#title-font-choice-Palatino' onclick='updatePlot("title-font-choice", "Palatino")'>Palatino</label>
+                                  <label id='#title-font-choice-Papyrus' onclick='updatePlot("title-font-choice", "Papyrus")'>Papyrus</label>
+                                  <label id='#title-font-choice-Parkavenue' onclick='updatePlot("title-font-choice", "Parkavenue")'>Parkavenue</label>
+                                  <label id='#title-font-choice-Perpetua' onclick='updatePlot("title-font-choice", "Perpetua")'>Perpetua</label>
+                                  <label id='#title-font-choice-Rockwell' onclick='updatePlot("title-font-choice", "Rockwell")'>Rockwell</label>
+                                  <label id='#title-font-choice-Rockwell Extra Bold' onclick='updatePlot("title-font-choice", "Rockwell Extra Bold")'>Rockwell Extra Bold</label>
+                                  <label id='#title-font-choice-Segoe UI' onclick='updatePlot("title-font-choice", "Segoe UI")'>Segoe UI</label>
+                                  <label id='#title-font-choice-Snell Roundhan' onclick='updatePlot("title-font-choice", "Snell Roundhan")'>Snell Roundhan</label>
+                                  <label id='#title-font-choice-Stencil Std' onclick='updatePlot("title-font-choice", "Stencil Std")'>Stencil Std</label>
+                                  <label id='#title-font-choice-Times New Roman' onclick='updatePlot("title-font-choice", "Times New Roman")'>Times New Roman</label>
+                                  <label id='#title-font-choice-Trattatello' onclick='updatePlot("title-font-choice", "Trattatello")'>Trattatello</label>
+                                  <label id='#title-font-choice-Trebuchet MS' onclick='updatePlot("title-font-choice", "Trebuchet MS")'>Trebuchet MS</label>
+                                  <label id='#title-font-choice-URW Chancery' onclick='updatePlot("title-font-choice", "URW Chancery")'>URW Chancery</label>
+                                  <label id='#title-font-choice-Verdana' onclick='updatePlot("title-font-choice", "Verdana")'>Verdana</label>
+                                  <label id='#title-font-choice-Zapf Chancery' onclick='updatePlot("title-font-choice", "Zapf Chancery")'>Zapf Chancery</label>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td> <label for="title-font-size-input">Font-size:</label></td>
+                            <td> <input class="font-size-input" id="title-font-size-input" onchange="updatePlot('title-font-size-input', null)" type="number" value="24" min="1" max="9999999"></td>
+                          </tr>
+                          <tr>
+                            <td> <label for="title-color">Font-color:</label> </td>
+                            <td> <input type="color" class="color-input" id="title-color" onchange="updatePlot('title-color', null)" value="#7a7a7a"></td>
+                          </tr>
+                        </table>
+                      </div>
+                      <hr>
+                      <div class="form-group">
+                        <label class="plot-control-labels" for="error-table">Error Display</label>
+                        <table id="error-table">
+                          <tr>
+                            <td><label for="error-none">No error shown</label></td>
+                            <td><input class="pointer error-button" type="radio" id="error-none" checked></td>
+                          </tr>
+                          <tr>
+                            <td><label for="error-bar">Show error bars</label></td>
+                            <td><input class="pointer error-button" type="radio" id="error-bar"></td>
+                          </tr>
+                          <tr>
+                            <td><label for="error-range">Show error range</label></td>
+                            <td><input class="pointer error-button" type="radio" id="error-range"></td>
+                          </tr>
+                        </table>
+                      </div>
+                    </td>
+                    <td class="control-panel-td">
+                      <div class="form-group">
+                        <label class="plot-control-labels" for="color-table">Line Color</label>
+                        <table class="color-table" id="color-table">
+                          <tr>
+                            <td>
+                              <label for="gen-coil-color">Coil color: </label>
+                            </td>
+                            <td>
+                              <input type="color" class="color-input" id="gen-coil-color" value="#808080" onchange="updatePlot('gen-coil-color', null)">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <label for="gen-helix-color">Helix color: </label>
+                            </td>
+                            <td>
+                              <input type="color" class="color-input" id="gen-helix-color" value="#600000" onchange="updatePlot('gen-helix-color', null)">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <label for="gen-sheet-color">Sheet color: </label>
+                            </td>
+                            <td>
+                              <input type="color" class="color-input" id="gen-sheet-color" value="#0f4880" onchange="updatePlot('gen-sheet-color', null)">
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                      <hr>
+                      <div class="form-group">
+                        <label class="plot-control-labels" for="line-width-input">Line Width</label>
+                        <br />
+                        <input class="pointer" type="range" id="line-width-input" min="0" max="10" value="4" oninput="updatePlot('line-width-input', null)">
+                        <label id="line-width-label" for="volume">2px</label>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="tab-pane fade" id="x-axis" role="tabpanel" aria-labelledby="x-axis-tab">
+                <!-- X-AXIS CONTROL FORM -->
+                <table class="control-table">
+                  <tr>
+                    <td class="control-panel-td">
+                      <div class="form-group">
+                        <label class="plot-control-labels" for="xaxis-title-input">X-Axis Title</label>
+                        <input type="text" id="xaxis-title-input" onkeyup="updatePlot('xaxis-title-input', null)" class="plot-title title-input" placeholder="Enter X-Axis Title" autocomplete="off">
+                        <table>
+                          <tr>
+                            <td> <label>Font-family:</label></td>
+                            <td>
+                              <div class="title-search-dropdown-container">
+                                <button onclick="xaxisTitleSearchDropdownClicked()" class="label-button dropbtn title-font-family-input">Montserrat <i class="dropdown-arrow fas fa-caret-down"></i></button>
+                                <div class="dropdown-content title-dropdown-content-container">
+                                  <input type="text" placeholder="Search.." class="title-font-family-input-options" onkeyup="xaxisFilterFunction()">
+                                  <label id='#xaxis-title-font-choice-Andale Mono' onclick='updatePlot("xaxis-title-font-choice", "Andale Mono")'>Andale Mono</label>
+                                  <label id='#xaxis-title-font-choice-Apple Chancery' onclick='updatePlot("xaxis-title-font-choice", "Apple Chancery")'>Apple Chancery</label>
+                                  <label id='#xaxis-title-font-choice-Arial' onclick='updatePlot("xaxis-title-font-choice", "Arial")'>Arial</label>
+                                  <label id='#xaxis-title-font-choice-Arnoldboecklin' onclick='updatePlot("xaxis-title-font-choice", "Arnoldboecklin")'>Arnoldboecklin</label>
+                                  <label id='#xaxis-title-font-choice-Avanta Garde' onclick='updatePlot("xaxis-title-font-choice", "Avanta Garde")'>Avanta Garde</label>
+                                  <label id='#xaxis-title-font-choice-Baskerville' onclick='updatePlot("xaxis-title-font-choice", "Baskerville")'>Baskerville</label>
+                                  <label id='#xaxis-title-font-choice-Big Caslon' onclick='updatePlot("xaxis-title-font-choice", "Big Caslon")'>Big Caslon</label>
+                                  <label id='#xaxis-title-font-choice-Blippo' onclick='updatePlot("xaxis-title-font-choice", "Blippo")'>Blippo</label>
+                                  <label id='#xaxis-title-font-choice-Bodoni MT' onclick='updatePlot("xaxis-title-font-choice", "Bodoni MT")'>Bodoni MT</label>
+                                  <label id='#xaxis-title-font-choice-Book Antiqua' onclick='updatePlot("xaxis-title-font-choice", "Book Antiqua")'>Book Antiqua</label>
+                                  <label id='#xaxis-title-font-choice-Bookman' onclick='updatePlot("xaxis-title-font-choice", "Bookman")'>Bookman</label>
+                                  <label id='#xaxis-title-font-choice-Bradley Hand' onclick='updatePlot("xaxis-title-font-choice", "Bradley Hand")'>Bradley Hand</label>
+                                  <label id='#xaxis-title-font-choice-Brush Script MT' onclick='updatePlot("xaxis-title-font-choice", "Brush Script MT")'>Brush Script MT</label>
+                                  <label id='#xaxis-title-font-choice-Brush Script Std' onclick='updatePlot("xaxis-title-font-choice", "Brush Script Std")'>Brush Script Std</label>
+                                  <label id='#xaxis-title-font-choice-Brushstroke' onclick='updatePlot("xaxis-title-font-choice", "Brushstroke")'>Brushstroke</label>
+                                  <label id='#xaxis-title-font-choice-Calibri' onclick='updatePlot("xaxis-title-font-choice", "Calibri")'>Calibri</label>
+                                  <label id='#xaxis-title-font-choice-Calisto MT' onclick='updatePlot("xaxis-title-font-choice", "Calisto MT")'>Calisto MT</label>
+                                  <label id='#xaxis-title-font-choice-Cambria' onclick='updatePlot("xaxis-title-font-choice", "Cambria")'>Cambria</label>
+                                  <label id='#xaxis-title-font-choice-Candara' onclick='updatePlot("xaxis-title-font-choice", "Candara")'>Candara</label>
+                                  <label id='#xaxis-title-font-choice-Century Gothic' onclick='updatePlot("xaxis-title-font-choice", "Century Gothic")'>Century Gothic</label>
+                                  <label id='#xaxis-title-font-choice-Chalkduster' onclick='updatePlot("xaxis-title-font-choice", "Chalkduster")'>Chalkduster</label>
+                                  <label id='#xaxis-title-font-choice-Comic Sans' onclick='updatePlot("xaxis-title-font-choice", "Comic Sans")'>Comic Sans</label>
+                                  <label id='#xaxis-title-font-choice-Comic Sans MS' onclick='updatePlot("xaxis-title-font-choice", "Comic Sans MS")'>Comic Sans MS</label>
+                                  <label id='#xaxis-title-font-choice-Consolas' onclick='updatePlot("xaxis-title-font-choice", "Consolas")'>Consolas</label>
+                                  <label id='#xaxis-title-font-choice-Copperplate' onclick='updatePlot("xaxis-title-font-choice", "Copperplate")'>Copperplate</label>
+                                  <label id='#xaxis-title-font-choice-Coronet script' onclick='updatePlot("xaxis-title-font-choice", "Coronet script")'>Coronet script</label>
+                                  <label id='#xaxis-title-font-choice-Courier' onclick='updatePlot("xaxis-title-font-choice", "Courier")'>Courier</label>
+                                  <label id='#xaxis-title-font-choice-Courier New' onclick='updatePlot("xaxis-title-font-choice", "Courier New")'>Courier New</label>
+                                  <label id='#xaxis-title-font-choice-Didot' onclick='updatePlot("xaxis-title-font-choice", "Didot")'>Didot</label>
+                                  <label id='#xaxis-title-font-choice-Florence' onclick='updatePlot("xaxis-title-font-choice", "Florence")'>Florence</label>
+                                  <label id='#xaxis-title-font-choice-Franklin Gothic Medium' onclick='updatePlot("xaxis-title-font-choice", "Franklin Gothic Medium")'>Franklin Gothic Medium</label>
+                                  <label id='#xaxis-title-font-choice-Futara' onclick='updatePlot("xaxis-title-font-choice", "Futara")'>Futara</label>
+                                  <label id='#xaxis-title-font-choice-Garamond' onclick='updatePlot("xaxis-title-font-choice", "Garamond")'>Garamond</label>
+                                  <label id='#xaxis-title-font-choice-Geneva' onclick='updatePlot("xaxis-title-font-choice", "Geneva")'>Geneva</label>
+                                  <label id='#xaxis-title-font-choice-Georgia' onclick='updatePlot("xaxis-title-font-choice", "Georgia")'>Georgia</label>
+                                  <label id='#xaxis-title-font-choice-Gill Sans' onclick='updatePlot("xaxis-title-font-choice", "Gill Sans")'>Gill Sans</label>
+                                  <label id='#xaxis-title-font-choice-Goudy Old Style' onclick='updatePlot("xaxis-title-font-choice", "Goudy Old Style")'>Goudy Old Style</label>
+                                  <label id='#xaxis-title-font-choice-Helvetica' onclick='updatePlot("xaxis-title-font-choice", "Helvetica")'>Helvetica</label>
+                                  <label id='#xaxis-title-font-choice-Hoefler Text' onclick='updatePlot("xaxis-title-font-choice", "Hoefler Text")'>Hoefler Text</label>
+                                  <label id='#xaxis-title-font-choice-Impact' onclick='updatePlot("xaxis-title-font-choice", "Impact")'>Impact</label>
+                                  <label id='#xaxis-title-font-choice-Jazz LET' onclick='updatePlot("xaxis-title-font-choice", "Jazz LET")'>Jazz LET</label>
+                                  <label id='#xaxis-title-font-choice-Lucida Bright' onclick='updatePlot("xaxis-title-font-choice", "Lucida Bright")'>Lucida Bright</label>
+                                  <label id='#xaxis-title-font-choice-Lucida Console' onclick='updatePlot("xaxis-title-font-choice", "Lucida Console")'>Lucida Console</label>
+                                  <label id='#xaxis-title-font-choice-Lucida Sans' onclick='updatePlot("xaxis-title-font-choice", "Lucida Sans")'>Lucida Sans</label>
+                                  <label id='#xaxis-title-font-choice-Lucida Sans Typewriter' onclick='updatePlot("xaxis-title-font-choice", "Lucida Sans Typewriter")'>Lucida Sans Typewriter</label>
+                                  <label id='#xaxis-title-font-choice-Lucidatypewriter' onclick='updatePlot("xaxis-title-font-choice", "Lucidatypewriter")'>Lucidatypewriter</label>
+                                  <label id='#xaxis-title-font-choice-Luminari' onclick='updatePlot("xaxis-title-font-choice", "Luminari")'>Luminari</label>
+                                  <label id='#xaxis-title-font-choice-Marker Felt' onclick='updatePlot("xaxis-title-font-choice", "Marker Felt")'>Marker Felt</label>
+                                  <label id='#xaxis-title-font-choice-Monaco' onclick='updatePlot("xaxis-title-font-choice", "Monaco")'>Monaco</label>
+                                  <label id='#xaxis-title-font-choice-New Century Schoolbook' onclick='updatePlot("xaxis-title-font-choice", "New Century Schoolbook")'>New Century Schoolbook</label>
+                                  <label id='#xaxis-title-font-choice-Noto' onclick='updatePlot("xaxis-title-font-choice", "Noto")'>Noto</label>
+                                  <label id='#xaxis-title-font-choice-Oldtown' onclick='updatePlot("xaxis-title-font-choice", "Oldtown")'>Oldtown</label>
+                                  <label id='#xaxis-title-font-choice-Optima' onclick='updatePlot("xaxis-title-font-choice", "Optima")'>Optima</label>
+                                  <label id='#xaxis-title-font-choice-Palatino' onclick='updatePlot("xaxis-title-font-choice", "Palatino")'>Palatino</label>
+                                  <label id='#xaxis-title-font-choice-Papyrus' onclick='updatePlot("xaxis-title-font-choice", "Papyrus")'>Papyrus</label>
+                                  <label id='#xaxis-title-font-choice-Parkavenue' onclick='updatePlot("xaxis-title-font-choice", "Parkavenue")'>Parkavenue</label>
+                                  <label id='#xaxis-title-font-choice-Perpetua' onclick='updatePlot("xaxis-title-font-choice", "Perpetua")'>Perpetua</label>
+                                  <label id='#xaxis-title-font-choice-Rockwell' onclick='updatePlot("xaxis-title-font-choice", "Rockwell")'>Rockwell</label>
+                                  <label id='#xaxis-title-font-choice-Rockwell Extra Bold' onclick='updatePlot("xaxis-title-font-choice", "Rockwell Extra Bold")'>Rockwell Extra Bold</label>
+                                  <label id='#xaxis-title-font-choice-Segoe UI' onclick='updatePlot("xaxis-title-font-choice", "Segoe UI")'>Segoe UI</label>
+                                  <label id='#xaxis-title-font-choice-Snell Roundhan' onclick='updatePlot("xaxis-title-font-choice", "Snell Roundhan")'>Snell Roundhan</label>
+                                  <label id='#xaxis-title-font-choice-Stencil Std' onclick='updatePlot("xaxis-title-font-choice", "Stencil Std")'>Stencil Std</label>
+                                  <label id='#xaxis-title-font-choice-Times New Roman' onclick='updatePlot("xaxis-title-font-choice", "Times New Roman")'>Times New Roman</label>
+                                  <label id='#xaxis-title-font-choice-Trattatello' onclick='updatePlot("xaxis-title-font-choice", "Trattatello")'>Trattatello</label>
+                                  <label id='#xaxis-title-font-choice-Trebuchet MS' onclick='updatePlot("xaxis-title-font-choice", "Trebuchet MS")'>Trebuchet MS</label>
+                                  <label id='#xaxis-title-font-choice-URW Chancery' onclick='updatePlot("xaxis-title-font-choice", "URW Chancery")'>URW Chancery</label>
+                                  <label id='#xaxis-title-font-choice-Verdana' onclick='updatePlot("xaxis-title-font-choice", "Verdana")'>Verdana</label>
+                                  <label id='#xaxis-title-font-choice-Zapf Chancery' onclick='updatePlot("xaxis-title-font-choice", "Zapf Chancery")'>Zapf Chancery</label>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td> <label for="xaxis-title-font-size-input">Font-size:</label></td>
+                            <td> <input id="xaxis-title-font-size-input" class="font-size-input" onchange="updatePlot('xaxis-title-font-size-input', null)" type="number" value="18" min="1" max="9999999"></td>
+                          </tr>
+                          <tr>
+                            <td> <label for="xaxis-color">Font-color:</label> </td>
+                            <td> <input type="color" class="color-input" id="xaxis-title-color" onchange="updatePlot('xaxis-title-color', null)" value="#7a7a7a"></td>
+                          </tr>
+                        </table>
+                      </div>
+                    </td>
+                    <td class="control-panel-td">
+                      <div class="xaxis-tick-form form-group">
+                        <label class="plot-control-labels" for="error-table">Ticks</label>
+                        <label class="tick-show-label">Display Ticks:</label>
+                        <table class="tick-display-table">
+                          <tr>
+                            <td><label>Outside</label></td>
+                            <td><input class="pointer xaxis-tick-display-input" type="checkbox" id="xaxis-ticks-outside" onchange="updatePlot('xaxis-ticks-outside', this);" checked></td>
+                            <td><label>Inside</label></td>
+                            <td><input class="pointer xaxis-tick-display-input" type="checkbox" id="xaxis-ticks-inside" onchange="updatePlot('xaxis-ticks-inside', this);"></td>
+                          </tr>
+                        </table>
+                        <table class="tick-measure-table">
+                          <tr>
+                            <td><label for="title-font-size-input">Tick Length:</label></td>
+                            <td><input class="font-size-input" id="xaxis-tick-length-input" onchange="updatePlot('xaxis-tick-length-input', null)" type="number" value="8" min="0" max="100"></td>
+                          </tr>
+                          <tr>
+                            <td><label for="title-font-size-input">Tick Width:</label></td>
+                            <td><input class="font-size-input" id="xaxis-tick-width-input" onchange="updatePlot('xaxis-tick-width-input', null)" type="number" value="1" min="0" max="100"></td>
+                          </tr>
+                          <tr>
+                            <td><label for="title-font-size-input">Tick Distance:</label></td>
+                            <td><input class="font-size-input" id="xaxis-tick-distance-input" onchange="updatePlot('xaxis-tick-distance-input', null)" type="number" value="" min="0" max="1000000"></td>
+                          </tr>
+                          <tr>
+                            <td> <label for="xaxis-tick-font-size-input">Font-size:</label></td>
+                            <td> <input id="xaxis-tick-font-size-input" class="font-size-input" onchange="updatePlot('xaxis-tick-font-size-input', null)" type="number" value="14" min="1" max="9999999"></td>
+                          </tr>
+                        </table>
+                        <small>For no tick marks, set length to zero.</small>
+                      </div> <!-- END XAXIS TICK FORM -->
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="tab-pane fade" id="y-axis" role="tabpanel" aria-labelledby="y-axis-tab">
+                <!-- Y-AXIS CONTROL FORM -->
+                <table class="control-table">
+                  <tr>
+                    <td class="control-panel-td">
+                      <div class="form-group">
+                        <label class="plot-control-labels" for="yaxis-title-input">Y-Axis Title</label>
+                        <input type="text" id="yaxis-title-input" onkeyup="updatePlot('yaxis-title-input', null)" class="plot-title title-input" placeholder="Enter Y-Axis Title" autocomplete="off">
+                        <table>
+                          <tr>
+                            <td> <label>Font-family:</label></td>
+                            <td>
+                              <div class="title-search-dropdown-container">
+                                <button onclick="yaxisTitleSearchDropdownClicked()" class="label-button dropbtn title-font-family-input">Montserrat <i class="dropdown-arrow fas fa-caret-down"></i></button>
+                                <div class="dropdown-content title-dropdown-content-container">
+                                  <input type="text" placeholder="Search.." class="title-font-family-input-options" onkeyup="yaxisFilterFunction()">
+                                  <label id='#yaxis-title-font-choice-Andale Mono' onclick='updatePlot("yaxis-title-font-choice", "Andale Mono")'>Andale Mono</label>
+                                  <label id='#yaxis-title-font-choice-Apple Chancery' onclick='updatePlot("yaxis-title-font-choice", "Apple Chancery")'>Apple Chancery</label>
+                                  <label id='#yaxis-title-font-choice-Arial' onclick='updatePlot("yaxis-title-font-choice", "Arial")'>Arial</label>
+                                  <label id='#yaxis-title-font-choice-Arnoldboecklin' onclick='updatePlot("yaxis-title-font-choice", "Arnoldboecklin")'>Arnoldboecklin</label>
+                                  <label id='#yaxis-title-font-choice-Avanta Garde' onclick='updatePlot("yaxis-title-font-choice", "Avanta Garde")'>Avanta Garde</label>
+                                  <label id='#yaxis-title-font-choice-Baskerville' onclick='updatePlot("yaxis-title-font-choice", "Baskerville")'>Baskerville</label>
+                                  <label id='#yaxis-title-font-choice-Big Caslon' onclick='updatePlot("yaxis-title-font-choice", "Big Caslon")'>Big Caslon</label>
+                                  <label id='#yaxis-title-font-choice-Blippo' onclick='updatePlot("yaxis-title-font-choice", "Blippo")'>Blippo</label>
+                                  <label id='#yaxis-title-font-choice-Bodoni MT' onclick='updatePlot("yaxis-title-font-choice", "Bodoni MT")'>Bodoni MT</label>
+                                  <label id='#yaxis-title-font-choice-Book Antiqua' onclick='updatePlot("yaxis-title-font-choice", "Book Antiqua")'>Book Antiqua</label>
+                                  <label id='#yaxis-title-font-choice-Bookman' onclick='updatePlot("yaxis-title-font-choice", "Bookman")'>Bookman</label>
+                                  <label id='#yaxis-title-font-choice-Bradley Hand' onclick='updatePlot("yaxis-title-font-choice", "Bradley Hand")'>Bradley Hand</label>
+                                  <label id='#yaxis-title-font-choice-Brush Script MT' onclick='updatePlot("yaxis-title-font-choice", "Brush Script MT")'>Brush Script MT</label>
+                                  <label id='#yaxis-title-font-choice-Brush Script Std' onclick='updatePlot("yaxis-title-font-choice", "Brush Script Std")'>Brush Script Std</label>
+                                  <label id='#yaxis-title-font-choice-Brushstroke' onclick='updatePlot("yaxis-title-font-choice", "Brushstroke")'>Brushstroke</label>
+                                  <label id='#yaxis-title-font-choice-Calibri' onclick='updatePlot("yaxis-title-font-choice", "Calibri")'>Calibri</label>
+                                  <label id='#yaxis-title-font-choice-Calisto MT' onclick='updatePlot("yaxis-title-font-choice", "Calisto MT")'>Calisto MT</label>
+                                  <label id='#yaxis-title-font-choice-Cambria' onclick='updatePlot("yaxis-title-font-choice", "Cambria")'>Cambria</label>
+                                  <label id='#yaxis-title-font-choice-Candara' onclick='updatePlot("yaxis-title-font-choice", "Candara")'>Candara</label>
+                                  <label id='#yaxis-title-font-choice-Century Gothic' onclick='updatePlot("yaxis-title-font-choice", "Century Gothic")'>Century Gothic</label>
+                                  <label id='#yaxis-title-font-choice-Chalkduster' onclick='updatePlot("yaxis-title-font-choice", "Chalkduster")'>Chalkduster</label>
+                                  <label id='#yaxis-title-font-choice-Comic Sans' onclick='updatePlot("yaxis-title-font-choice", "Comic Sans")'>Comic Sans</label>
+                                  <label id='#yaxis-title-font-choice-Comic Sans MS' onclick='updatePlot("yaxis-title-font-choice", "Comic Sans MS")'>Comic Sans MS</label>
+                                  <label id='#yaxis-title-font-choice-Consolas' onclick='updatePlot("yaxis-title-font-choice", "Consolas")'>Consolas</label>
+                                  <label id='#yaxis-title-font-choice-Copperplate' onclick='updatePlot("yaxis-title-font-choice", "Copperplate")'>Copperplate</label>
+                                  <label id='#yaxis-title-font-choice-Coronet script' onclick='updatePlot("yaxis-title-font-choice", "Coronet script")'>Coronet script</label>
+                                  <label id='#yaxis-title-font-choice-Courier' onclick='updatePlot("yaxis-title-font-choice", "Courier")'>Courier</label>
+                                  <label id='#yaxis-title-font-choice-Courier New' onclick='updatePlot("yaxis-title-font-choice", "Courier New")'>Courier New</label>
+                                  <label id='#yaxis-title-font-choice-Didot' onclick='updatePlot("yaxis-title-font-choice", "Didot")'>Didot</label>
+                                  <label id='#yaxis-title-font-choice-Florence' onclick='updatePlot("yaxis-title-font-choice", "Florence")'>Florence</label>
+                                  <label id='#yaxis-title-font-choice-Franklin Gothic Medium' onclick='updatePlot("yaxis-title-font-choice", "Franklin Gothic Medium")'>Franklin Gothic Medium</label>
+                                  <label id='#yaxis-title-font-choice-Futara' onclick='updatePlot("yaxis-title-font-choice", "Futara")'>Futara</label>
+                                  <label id='#yaxis-title-font-choice-Garamond' onclick='updatePlot("yaxis-title-font-choice", "Garamond")'>Garamond</label>
+                                  <label id='#yaxis-title-font-choice-Geneva' onclick='updatePlot("yaxis-title-font-choice", "Geneva")'>Geneva</label>
+                                  <label id='#yaxis-title-font-choice-Georgia' onclick='updatePlot("yaxis-title-font-choice", "Georgia")'>Georgia</label>
+                                  <label id='#yaxis-title-font-choice-Gill Sans' onclick='updatePlot("yaxis-title-font-choice", "Gill Sans")'>Gill Sans</label>
+                                  <label id='#yaxis-title-font-choice-Goudy Old Style' onclick='updatePlot("yaxis-title-font-choice", "Goudy Old Style")'>Goudy Old Style</label>
+                                  <label id='#yaxis-title-font-choice-Helvetica' onclick='updatePlot("yaxis-title-font-choice", "Helvetica")'>Helvetica</label>
+                                  <label id='#yaxis-title-font-choice-Hoefler Text' onclick='updatePlot("yaxis-title-font-choice", "Hoefler Text")'>Hoefler Text</label>
+                                  <label id='#yaxis-title-font-choice-Impact' onclick='updatePlot("yaxis-title-font-choice", "Impact")'>Impact</label>
+                                  <label id='#yaxis-title-font-choice-Jazz LET' onclick='updatePlot("yaxis-title-font-choice", "Jazz LET")'>Jazz LET</label>
+                                  <label id='#yaxis-title-font-choice-Lucida Bright' onclick='updatePlot("yaxis-title-font-choice", "Lucida Bright")'>Lucida Bright</label>
+                                  <label id='#yaxis-title-font-choice-Lucida Console' onclick='updatePlot("yaxis-title-font-choice", "Lucida Console")'>Lucida Console</label>
+                                  <label id='#yaxis-title-font-choice-Lucida Sans' onclick='updatePlot("yaxis-title-font-choice", "Lucida Sans")'>Lucida Sans</label>
+                                  <label id='#yaxis-title-font-choice-Lucida Sans Typewriter' onclick='updatePlot("yaxis-title-font-choice", "Lucida Sans Typewriter")'>Lucida Sans Typewriter</label>
+                                  <label id='#yaxis-title-font-choice-Lucidatypewriter' onclick='updatePlot("yaxis-title-font-choice", "Lucidatypewriter")'>Lucidatypewriter</label>
+                                  <label id='#yaxis-title-font-choice-Luminari' onclick='updatePlot("yaxis-title-font-choice", "Luminari")'>Luminari</label>
+                                  <label id='#yaxis-title-font-choice-Marker Felt' onclick='updatePlot("yaxis-title-font-choice", "Marker Felt")'>Marker Felt</label>
+                                  <label id='#yaxis-title-font-choice-Monaco' onclick='updatePlot("yaxis-title-font-choice", "Monaco")'>Monaco</label>
+                                  <label id='#yaxis-title-font-choice-New Century Schoolbook' onclick='updatePlot("yaxis-title-font-choice", "New Century Schoolbook")'>New Century Schoolbook</label>
+                                  <label id='#yaxis-title-font-choice-Noto' onclick='updatePlot("yaxis-title-font-choice", "Noto")'>Noto</label>
+                                  <label id='#yaxis-title-font-choice-Oldtown' onclick='updatePlot("yaxis-title-font-choice", "Oldtown")'>Oldtown</label>
+                                  <label id='#yaxis-title-font-choice-Optima' onclick='updatePlot("yaxis-title-font-choice", "Optima")'>Optima</label>
+                                  <label id='#yaxis-title-font-choice-Palatino' onclick='updatePlot("yaxis-title-font-choice", "Palatino")'>Palatino</label>
+                                  <label id='#yaxis-title-font-choice-Papyrus' onclick='updatePlot("yaxis-title-font-choice", "Papyrus")'>Papyrus</label>
+                                  <label id='#yaxis-title-font-choice-Parkavenue' onclick='updatePlot("yaxis-title-font-choice", "Parkavenue")'>Parkavenue</label>
+                                  <label id='#yaxis-title-font-choice-Perpetua' onclick='updatePlot("yaxis-title-font-choice", "Perpetua")'>Perpetua</label>
+                                  <label id='#yaxis-title-font-choice-Rockwell' onclick='updatePlot("yaxis-title-font-choice", "Rockwell")'>Rockwell</label>
+                                  <label id='#yaxis-title-font-choice-Rockwell Extra Bold' onclick='updatePlot("yaxis-title-font-choice", "Rockwell Extra Bold")'>Rockwell Extra Bold</label>
+                                  <label id='#yaxis-title-font-choice-Segoe UI' onclick='updatePlot("yaxis-title-font-choice", "Segoe UI")'>Segoe UI</label>
+                                  <label id='#yaxis-title-font-choice-Snell Roundhan' onclick='updatePlot("yaxis-title-font-choice", "Snell Roundhan")'>Snell Roundhan</label>
+                                  <label id='#yaxis-title-font-choice-Stencil Std' onclick='updatePlot("yaxis-title-font-choice", "Stencil Std")'>Stencil Std</label>
+                                  <label id='#yaxis-title-font-choice-Times New Roman' onclick='updatePlot("yaxis-title-font-choice", "Times New Roman")'>Times New Roman</label>
+                                  <label id='#yaxis-title-font-choice-Trattatello' onclick='updatePlot("yaxis-title-font-choice", "Trattatello")'>Trattatello</label>
+                                  <label id='#yaxis-title-font-choice-Trebuchet MS' onclick='updatePlot("yaxis-title-font-choice", "Trebuchet MS")'>Trebuchet MS</label>
+                                  <label id='#yaxis-title-font-choice-URW Chancery' onclick='updatePlot("yaxis-title-font-choice", "URW Chancery")'>URW Chancery</label>
+                                  <label id='#yaxis-title-font-choice-Verdana' onclick='updatePlot("yaxis-title-font-choice", "Verdana")'>Verdana</label>
+                                  <label id='#yaxis-title-font-choice-Zapf Chancery' onclick='updatePlot("yaxis-title-font-choice", "Zapf Chancery")'>Zapf Chancery</label>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td> <label for="yaxis-title-font-size-input">Font-size:</label></td>
+                            <td> <input id="yaxis-title-font-size-input" class="font-size-input" onchange="updatePlot('yaxis-title-font-size-input', null)" type="number" value="18" min="1" max="9999999"></td>
+                          </tr>
+                          <tr>
+                            <td> <label for="yaxis-color">Font-color:</label> </td>
+                            <td> <input type="color" class="color-input" id="yaxis-title-color" onchange="updatePlot('yaxis-title-color', null)" value="#7a7a7a"></td>
+                          </tr>
+                        </table>
+                      </div>
+                    </td>
+                    <td class="control-panel-td">
+                      <div class="yaxis-tick-form form-group">
+                        <label class="plot-control-labels" for="error-table">Ticks</label>
+                        <label class="tick-show-label">Display Ticks:</label>
+                        <table class="tick-display-table">
+                          <tr>
+                            <td><label>Outside</label></td>
+                            <td><input class="pointer yaxis-tick-display-input" type="checkbox" id="yaxis-ticks-outside" onchange="updatePlot('yaxis-ticks-outside', this);" checked></td>
+                            <td><label>Inside</label></td>
+                            <td><input class="pointer yaxis-tick-display-input" type="checkbox" id="yaxis-ticks-inside" onchange="updatePlot('yaxis-ticks-inside', this);"></td>
+                          </tr>
+                        </table>
+                        <table class="tick-measure-table">
+                          <tr>
+                            <td><label for="title-font-size-input">Tick Length:</label></td>
+                            <td><input class="font-size-input" id="yaxis-tick-length-input" onchange="updatePlot('yaxis-tick-length-input', null)" type="number" value="0" min="0" max="100"></td>
+                          </tr>
+                          <tr>
+                            <td><label for="title-font-size-input">Tick Width:</label></td>
+                            <td><input class="font-size-input" id="yaxis-tick-width-input" onchange="updatePlot('yaxis-tick-width-input', null)" type="number" value="1" min="0" max="100"></td>
+                          </tr>
+                          <tr>
+                            <td><label for="title-font-size-input">Tick Distance:</label></td>
+                            <td><input class="font-size-input" id="yaxis-tick-distance-input" onchange="updatePlot('yaxis-tick-distance-input', null)" type="number" value="" min="0" max="1000000"></td>
+                          </tr>
+                          <tr>
+                            <td> <label for="yaxis-tick-font-size-input">Font-size:</label></td>
+                            <td> <input id="yaxis-tick-font-size-input" class="font-size-input" onchange="updatePlot('yaxis-tick-font-size-input', null)" type="number" value="14" min="1" max="9999999"></td>
+                          </tr>
+                        </table>
+                        <small>For no tick marks, set length to zero.</small>
+                      </div> <!-- END Y-AXIS TICK FORM -->
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div> <!-- Plot control tabs -->
+      </div> <!-- End right panel -->
+    </div> <!-- End row -->
+  </div> <!-- End container -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="index.js" charset="utf-8"></script>
+  <script src="plotterscript.js" charset="utf-8"></script>
+</body>
+
+</html>

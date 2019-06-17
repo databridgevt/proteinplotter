@@ -1,0 +1,111 @@
+input, button {
+  margin: 2rem;
+  display: inline;
+}
+
+table {
+  border: 2px solid black;
+  margin: 2rem;
+}
+
+tr {
+  border-bottom: 1px solid black;
+}
+
+td {
+  font-size: 12px;
+}
+
+.colored {
+  width: 75px;
+  height: 100px;
+}
+
+#legend table {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  border: 0;
+}
+
+#legend tr {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+#legend td {
+  padding: 0;
+  padding-right: 2px;
+  border: 0;
+}
+
+#horizontal-legend td {
+  border-bottom: 2px solid black;
+  border-right: 2px solid black;
+  border-left: 2px solid black;
+}
+
+#color0 {
+  background-color: rgb(255, 0, 0);
+}
+
+#color1 {
+  background-color: rgb(255, 85, 0);
+}
+
+#color2 {
+  background-color: rgb(128, 64, 0);
+}
+
+#color3 {
+  background-color: rgb(254, 170, 0);
+}
+
+#color4 {
+  background-color: rgb(255, 255, 0);
+}
+
+#color5 {
+  background-color: rgb(127, 255, 0);
+}
+
+#color6 {
+  background-color: rgb(0, 255, 0);
+}
+
+#color7 {
+  background-color: rgb(0, 255, 253);
+}
+
+#color8 {
+  background-color: rgb(0, 0, 255);
+}
+
+#color9 {
+  background-color: rgb(128, 0, 255);
+}
+
+#color10 {
+  background-color: rgb(255, 0, 255);
+}
+
+#color11 {
+  background-color: rgb(255, 0, 128);
+}
+
+#color12 {
+  background-color: rgb(128, 128, 128);
+}
+
+#color13 {
+  background-color: rgb(255, 128, 128);
+}
+
+#color14 {
+  background-color: rgb(255, 255, 128);
+}
+
+#color15 {
+  background-color: rgb(128, 128, 255);
+}
